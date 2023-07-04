@@ -1,0 +1,50 @@
+{
+    "name": "sandbox-client",
+    "version": "1.1.0",
+    "description": "A library in typescript for integrating with Sandbox",
+    "main": "dist/index.js",
+    "keywords": [
+        "api",
+        "tax-compliance",
+        "subscription",
+        "sandbox",
+        "sandbox-typescript"
+    ],
+    "scripts": {
+        "build": "tsc --build && npm ci --production",
+        "build-module": "tsc --build"
+    },
+    "homepage": "https://github.com/TeamSandbox",
+    "author": "Developer <developer@sandbox.co.in> (https://www.sandbox.co.in)",
+    "license": "ISC",
+    "directories": {
+        "lib": "./dist"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TeamSandbox/sandbox-client-node.git"
+    },
+    "engines": {
+        "node": "*"
+    },
+    "bugs": {
+        "url": "http://developer.sandbox.co.in",
+        "email": "developer@sandbox.co.in"
+    },
+    "dependencies": {
+        "axios": "^1.4.0",
+        "form-data": "^4.0.0",
+        "jsonwebtoken": "^9.0.0",
+        "pako": "^2.1.0"
+    },
+    "devDependencies": {
+        "@types/jsonwebtoken": "^9.0.2",
+        "@types/node": "^12.12.0",
+        "@types/pako": "^2.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.40.1",
+        "@typescript-eslint/parser": "^5.40.1",
+        "eslint": "^8.25.0",
+        "ts-node": "^10.9.1",
+        "typescript": "4.2.4"
+    }
+}
