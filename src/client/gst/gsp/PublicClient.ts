@@ -1,6 +1,6 @@
 import { SandboxException } from "../../../exception/SandboxException";
+import { ApiClientConfig } from "../../../interface/ApiClientConfig.interface";
 import { URL } from "../../../types/Endpoint";
-import { ApiSessionProvider } from "../../ApiSessionProvider";
 import { RestClient } from "../../RestClient";
 
 /**
@@ -13,13 +13,14 @@ import { RestClient } from "../../RestClient";
 export class PublicClient extends RestClient {
 
     /**
-     * Creates an instance of PublicClient.
-     * @param {ApiSessionProvider} sessionCredentials
+     * Creates an instance of PANClient.
+     * @param {ApiClientConfig} config
      * @memberof PublicClient
      */
-    constructor(sessionCredentials: ApiSessionProvider) {
-        super(sessionCredentials);
+    constructor(config: ApiClientConfig) {
+        super(config);
     }
+
 
     /**
      *

@@ -1,5 +1,4 @@
-import { ApiSessionCredentials } from "../auth/ApiSessionCredentials";
-import { ApiSessionProvider } from "./ApiSessionProvider";
+import { ApiClientConfig } from "../interface/ApiClientConfig.interface";
 import { RestClient } from "./RestClient";
 import { BankClient } from "./bank/BankClient";
 import { PublicClient } from "./gst/gsp/PublicClient";
@@ -22,16 +21,16 @@ export class ApiClient extends RestClient {
 
     /**
      * Creates an instance of ApiClient.
-     * @param {ApiSessionCredentials} sessionCredentials
+     * @param {ApiClientConfig} sessionCredentials
      * @memberof ApiClient
      */
-    constructor(sessionCredentials: ApiSessionProvider) {
-        super(sessionCredentials);
+    constructor(config: ApiClientConfig) {
+        super(config);
 
-        this.PAN = new PANClient(sessionCredentials)
-        this.BANK = new BankClient(sessionCredentials)
-        this.MCA = new MCAClient(sessionCredentials)
-        this.GST = new PublicClient(sessionCredentials)
+        this.PAN = new PANClient(config)
+        this.BANK = new BankClient(config)
+        this.MCA = new MCAClient(config)
+        this.GST = new PublicClient(config)
 
     }
 }

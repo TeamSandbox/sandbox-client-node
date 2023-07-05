@@ -1,11 +1,11 @@
-import { Endpoint, URL } from "Endpoint";
+import { Endpoint, URL } from "../types/Endpoint";
 import axios, { AxiosInstance } from "axios";
 import jwt from 'jsonwebtoken';
-import { ApiSessionCredentials } from "../auth/ApiSessionCredentials";
-import { ApiUserCredentials } from "../auth/ApiUserCredentials";
+import { ApiSessionCredentials } from "./ApiSessionCredentials";
+import { ApiUserCredentials } from "./ApiUserCredentials";
 import { SandboxException } from "../exception/SandboxException";
 
-export class ApiSessionProvider {
+export class ApiSessionCredentialProvider {
     private apiUserCredentials: ApiUserCredentials;
     private accessToken?: string;
     private client: AxiosInstance;
@@ -45,7 +45,8 @@ export class ApiSessionProvider {
             const headers = {
                 'Content-Type': 'application/json',
                 "x-api-key": this.apiUserCredentials.getApiKey(),
-                "x-api-secret": this.apiUserCredentials.getApiSecret()
+                "x-api-secret": this.apiUserCredentials.getApiSecret(),
+                'x-api-version': '1.0.0'
             }
 
             return this.client.post(Endpoint.build(URL.AUTHENTICATE, null), null, { headers: headers })
@@ -85,7 +86,9 @@ export class ApiSessionProvider {
             const headers = {
                 'Content-Type': 'application/json',
                 "x-api-key": this.apiUserCredentials.getApiKey(),
-                "Authorization": accessToken
+                "Authorization": accessToken,
+                'x-api-version': '1.0.0'
+
             }
 
             return this.client.post(Endpoint.build(URL.AUTHORIZE, requestToken != null ? requestToken : accessToken), null, { headers: headers })

@@ -1,10 +1,11 @@
 import axios, { AxiosInstance } from 'axios';
 import { gzip } from 'pako';
 import { ApiSessionCredentials } from "../auth/ApiSessionCredentials";
+import { ApiSessionCredentialProvider } from '../auth/ApiSessionProvider';
 import { SandboxException } from '../exception/SandboxException';
 import { Options } from "../interface/Options.interface";
+import { RestClientConfig } from '../interface/RestClientConfig.inteface';
 import { Endpoint } from "../types/Endpoint";
-import { ApiSessionProvider } from './ApiSessionProvider';
 
 /**
  *
@@ -14,8 +15,8 @@ import { ApiSessionProvider } from './ApiSessionProvider';
  */
 export class RestClient {
 
-    protected sessionProvider: ApiSessionProvider;
-
+    protected sessionCredentialProvider?: ApiSessionCredentialProvider;
+    protected sessionCredentials?: ApiSessionCredentials;
     protected client: AxiosInstance
 
     /**
@@ -23,8 +24,12 @@ export class RestClient {
      * @param {ApiSessionCredentials} sessionCredentials
      * @memberof RestClient
      */
-    constructor(sessionProvider: ApiSessionProvider) {
-        this.sessionProvider = sessionProvider;
+    constructor(config: RestClientConfig) {
+        if (config.sessionCredentials == null && config.sessionCredentialsProvider == null) {
+            throw new SandboxException({ message: "Failed to instantiate client: pass either of SessionCredentials or SessionCredntialProvider" })
+        }
+        this.sessionCredentials = config.sessionCredentials
+        this.sessionCredentialProvider = config.sessionCredentialsProvider;
         this.client = axios.create();
         this.client.interceptors.request.use(async request => this.requestOnFulfilled(request), error => this.requestOnRejected(error))
         this.client.interceptors.response.use(async response => this.responseOnFulfilled(response), error => this.responseOnRejected(error))
@@ -121,8 +126,6 @@ export class RestClient {
 
         const headers = {
             'Content-Type': 'application/json',
-            // "x-api-key": sessionCredentials.getApiKey(),
-            // "Authorization": sessionCredentials.getAccessToken()
         }
 
         return this.client.delete(Endpoint.build(url, args), { headers: headers })
@@ -144,7 +147,14 @@ export class RestClient {
     }
 
     private async requestOnFulfilled(request) {
-        const sessionCredentials = await this.sessionProvider.provide();
+        let sessionCredentials: ApiSessionCredentials;
+
+        if (this.sessionCredentials) {
+            sessionCredentials = this.sessionCredentials;
+        }
+        else {
+            sessionCredentials = await this.sessionCredentialProvider!.provide();
+        }
 
         // Implement retry
         request.headers['x-api-key'] = sessionCredentials.getApiKey();
@@ -164,12 +174,19 @@ export class RestClient {
     }
     private async responseOnRejected(error) {
         let retryResponse
+        console.info("Error", error);
         switch (error.response.data.code) {
             case 403:
                 switch (error.response.data.message) {
                     case "Access token has expired": {
+                        let sessionCredentials: ApiSessionCredentials;
+                        if (this.sessionCredentials) {
+                            sessionCredentials = this.sessionCredentials;
+                        }
+                        else {
+                            sessionCredentials = await this.sessionCredentialProvider!.provide();
+                        }
 
-                        const sessionCredentials: ApiSessionCredentials = await this.sessionProvider.provide();
 
                         error.config.headers['Authorization'] = sessionCredentials.getAccessToken()
                         retryResponse = await this.client.request(error.config)
