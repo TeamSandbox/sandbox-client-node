@@ -5,7 +5,7 @@
  * @class Endpoint
  */
 export class Endpoint {
-    static USER_AGENT = "node/sandbox-api-client/1.1.0";
+    static USER_AGENT = "node/sandbox-api-client/1.0.0";
   
     static API_VERSION = "1.0.0";
   

@@ -15,19 +15,27 @@ Find us @ [Sandbox](https://sandbox.co.in)
 
 ### API Authentication
 
-Instantiate `ApiClient` with `api_key` & `api_secret`. Use this ApiClient to call Paid APIs or to access resources on server for api user. You can obtain the key from the dashboard. [Sandbox Dashboard](https://dashboard.sandbox.co.in)
+Instantiate `ApiClient` with `api_key` & `api_secret`. Use this ApiClient to call APIs or to access resources on server for api user. You can obtain the key from the dashboard. [Sandbox Dashboard](https://dashboard.sandbox.co.in)
 
 ```Typescript
-// Initialize ApiUserCredentials
 const apiKey = 'YOUR_API_KEY';
 const apiSecret = 'YOUR_API_SECRET'
+
+// Initialize ApiUserCredentials
 const credentials = new ApiUserCredentials(apiKey, apiSecret);
 
-// Initialize client with API session
-const apiClient = await (new ApiClientBuilder()).withCredentials(credentials).build();
-  
-// Use ApiClient to call Paid APIs or to access resources on server for api user
-const response = await apiClient.TAX_PAYER.searchGstin(gstin);
+// Initialize ApiSessionProvider
+const apiSessionProvider = new ApiSessionProvider(credentials);
+
+// Initialize client with API session provider
+const apiClient = new ApiClient(apiSessionProvider);
+
+const pan = "XXXPX1234X";
+const consent = "Y";
+const reason = "For opening Demat account";
+
+// Use ApiClient to call APIs or to access resources on server for api user
+const response = await apiClient.PAN.verifyPanAdvance(pan, consent, reason)  
 
 ```
 

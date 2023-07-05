@@ -144,13 +144,12 @@ export class RestClient {
     }
 
     private async requestOnFulfilled(request) {
-
         const sessionCredentials = await this.sessionProvider.provide();
 
         // Implement retry
         request.headers['x-api-key'] = sessionCredentials.getApiKey();
         request.headers['Authorization'] = sessionCredentials.getAccessToken();
-        request.headers['User-Agent'] = 'node/sandbox-api-client/1.1.0';
+        request.headers['User-Agent'] = 'node/sandbox-api-client/1.0.0';
 
         return request
     }
